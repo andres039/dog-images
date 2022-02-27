@@ -1,34 +1,43 @@
 import React, { useState, useEffect } from "react";
 import Card from "./components/Card";
+import Error from "./components/Error";
 import Select from "./components/Select";
 import getDogs from "./helpers/getDogs";
 
 const initialDog = {
   image:
-    "https://www.gannett-cdn.com/presto/2020/06/12/PTAL/ce24bfcd-a8ac-46f8-bcd1-131d0f03609d-Everett_update.jpg?width=660&height=538&fit=crop&format=pjpg&auto=webp",
+    "",
   breed: {
-    id: "1",
-    name: "Labrador",
+    id: "0",
+    name: "Random",
   },
 };
 function App() {
   const [dog, setDog] = useState(initialDog);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   useEffect(() => {
-    updateDog();
+    updateDog(0);
   }, []);
 
-  const updateDog = () => {
-    getDogs()
+  const updateDog = (breedId) => {
+    setLoading(true);
+    getDogs(breedId)
       .then((newDog) => {
         setDog(newDog);
+        setLoading(false);
       })
-      .catch((reason) => console.error(reason));
+      .catch((reason) => {
+        console.error(reason);
+        setError("Error al cargar un perro");
+        setLoading(false);
+      });
   };
   return (
     <div className="app">
-      <Select />
-      <Card dog={dog} />
+      <Select updateDog={updateDog} />
+      {error && <Error error={error} />}
+      <Card dog={dog} updateDog={updateDog} loading={loading} />
     </div>
   );
 }

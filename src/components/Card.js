@@ -1,12 +1,16 @@
-import React from 'react'
+import React from "react";
+import Spinner from "./Spinner";
 
-const Card = ({ dog }) => {
+const Card = ({ dog, loading, updateDog }) => {
+  
+  if (loading === true) return <Spinner />;
+
   return (
-    <div className='card'>
+    <div className="card bounce" onClick={() => updateDog(dog.breed.id)}>
       <img src={dog.image} alt="dog" />
       <p>{dog.breed.name}</p>
     </div>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;
